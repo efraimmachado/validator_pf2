@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<rdf:RDF
+    xmlns:process="http://www.daml.org/services/owl-s/1.1/Process.owl#"
+    xmlns:service="http://www.daml.org/services/owl-s/1.1/Service.owl#"
+    xmlns="http://localhost:8080/Calculator/owls/subtracao_Calculadora.owl"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:profile="http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+    xmlns:grounding="http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+    xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+    xmlns:expression="http://www.daml.org/services/owl-s/1.1/generic/Expression.owl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:list="http://www.daml.org/services/owl-s/1.1/generic/ObjectList.owl#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:swrl="http://www.w3.org/2003/11/swrl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://localhost:8080/Calculator/owls/subtracao_Calculadora.owl">
+  <service:Service rdf:about="Calculator.owlsubtracao_Calculadora.owl#subtracao_CalculadoraService">
+    <service:describedBy>
+      <process:AtomicProcess rdf:about="Calculator.owlsubtracao_Calculadora.owl#subtracao_CalculadoraAtomicProcess"/>
+    </service:describedBy>
+    <service:presents>
+      <profile:Profile rdf:about="Calculator.owlsubtracao_Calculadora.owl#subtracao_CalculadoraProfile"/>
+    </service:presents>
+    <service:supports>
+      <grounding:WsdlGrounding rdf:about="Calculator.owlsubtracao_Calculadora.owl#subtracao_CalculadoraGrounding"/>
+    </service:supports>
+  </service:Service>
+  <profile:Profile rdf:about="Calculator.owlsubtracao_Calculadora.owl#subtracao_CalculadoraProfile">
+    <profile:hasInput>
+      <process:Input rdf:about="Calculator.owlsubtracao_Calculadora.owl#minuendo">
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://www.w3.org/2001/XMLSchema#int</process:parameterType>
+        <rdfs:label>minuendo</rdfs:label>
+      </process:Input>
+    </profile:hasInput>
+    <profile:textDescription>subtracao_Calculadora was automatically generated from WSDL with JAX-SA.</profile:textDescription>
+    <service:presentedBy rdf:resource="Calculator.owlsubtracao_Calculadora.owl#subtracao_CalculadoraService"/>
+    <profile:hasOutput>
+      <process:Output rdf:about="Calculator.owlsubtracao_Calculadora.owl#return">
+        <rdfs:label>return</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://www.w3.org/2001/XMLSchema#string</process:parameterType>
+      </process:Output>
+    </profile:hasOutput>
+    <profile:hasInput>
+      <process:Input rdf:about="Calculator.owlsubtracao_Calculadora.owl#subtraendo">
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://www.w3.org/2001/XMLSchema#int</process:parameterType>
+        <rdfs:label>subtraendo</rdfs:label>
+      </process:Input>
+    </profile:hasInput>
+    <profile:serviceName>subtracao_Calculadora</profile:serviceName>
+  </profile:Profile>
+  <process:AtomicProcess rdf:about="Calculator.owlsubtracao_Calculadora.owl#subtracao_CalculadoraAtomicProcess">
+    <process:hasInput rdf:resource="Calculator.owlsubtracao_Calculadora.owl#minuendo"/>
+    <service:describes rdf:resource="Calculator.owlsubtracao_Calculadora.owl#subtracao_CalculadoraService"/>
+    <process:hasOutput rdf:resource="Calculator.owlsubtracao_Calculadora.owl#return"/>
+    <process:hasInput rdf:resource="Calculator.owlsubtracao_Calculadora.owl#subtraendo"/>
+  </process:AtomicProcess>
+  <grounding:WsdlGrounding rdf:about="Calculator.owlsubtracao_Calculadora.owl#subtracao_CalculadoraGrounding">
+    <service:supportedBy rdf:resource="Calculator.owlsubtracao_Calculadora.owl#subtracao_CalculadoraService"/>
+    <grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:about="Calculator.owlsubtracao_Calculadora.owl#subtracaoAtomicGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="Calculator.owlsubtracao_Calculadora.owl#subtracaoAtomicGrounding">
+    <grounding:owlsProcess rdf:resource="Calculator.owlsubtracao_Calculadora.owl#subtracao_CalculadoraAtomicProcess"/>
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://localhost:8080/Calculator/services/Calculadora?wsdl</grounding:wsdlDocument>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://ws#subtracaoRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://localhost:8080/Calculator/services/Calculadora?wsdl#CalculadoraHttpSoap11Endpoint</grounding:portType>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://localhost:8080/Calculator/services/Calculadora?wsdl#subtracao</grounding:operation>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="Calculator.owlsubtracao_Calculadora.owl#return"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://localhost:8080/Calculator/services/Calculadora?wsdl#return</grounding:wsdlMessagePart>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://ws#subtracaoResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="Calculator.owlsubtracao_Calculadora.owl#minuendo"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://localhost:8080/Calculator/services/Calculadora?wsdl#minuendo</grounding:wsdlMessagePart>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://localhost:8080/Calculator/services/Calculadora?wsdl#subtraendo</grounding:wsdlMessagePart>
+        <grounding:owlsParameter rdf:resource="Calculator.owlsubtracao_Calculadora.owl#subtraendo"/>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+  </grounding:WsdlAtomicProcessGrounding>
+</rdf:RDF>

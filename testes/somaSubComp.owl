@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE uridef[
+  <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns">
+  <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema">
+  <!ENTITY owl "http://www.w3.org/2002/07/owl">
+  <!ENTITY xsd "http://www.w3.org/2001/XMLSchema">
+  <!ENTITY service "http://www.daml.org/services/owl-s/1.1/Service.owl">
+  <!ENTITY profile "http://www.daml.org/services/owl-s/1.1/Profile.owl">
+  <!ENTITY process "http://www.daml.org/services/owl-s/1.1/Process.owl">
+  <!ENTITY grounding "http://www.daml.org/services/owl-s/1.1/Grounding.owl">
+  <!ENTITY expr "http://www.daml.org/services/owl-s/1.1/generic/Expression.owl">
+  <!ENTITY swrl "http://www.w3.org/2003/11/swrl">
+  <!ENTITY swrlb "http://www.w3.org/2003/11/swrlb">
+  <!ENTITY list "http://www.daml.org/services/owl-s/1.1/generic/ObjectList.owl">  
+  <!ENTITY soma_CalculadoraAtomicProces "http://localhost:8080/Calculator/owls/Calculator.owlsoma_Calculadora.owl">   
+  <!ENTITY subtracao_CalculadoraAtomicProces "http://localhost:8080/Calculator/owls/Calculator.owlsubtracao_Calculadora.owl">  
+  <!ENTITY concepts "http://www.mindswap.org/2004/owl-s/concepts.owl">  
+  <!ENTITY this "http://localhost:8080/Calculator/owls/somaSubComp.owl">  
+]>
+<rdf:RDF
+  xmlns:rdf="&rdf;#" 
+  xmlns:rdfs="&rdfs;#" 
+  xmlns:owl="&owl;#" 
+  xmlns:xsd="&xsd;#" 
+  xmlns:service="&service;#" 
+  xmlns:profile="&profile;#" 
+  xmlns:process="&process;#" 
+  xmlns:grounding="&grounding;#" 
+  xmlns:expr="&expr;#"
+  xmlns:swrl="&swrl;#"
+  xmlns:list="&list;#"
+  xml:base="&this;"
+  xmlns="&this;#"
+>
+
+<owl:Ontology rdf:about="">
+	<owl:imports rdf:resource="&soma_CalculadoraAtomicProces;"/>
+	<owl:imports rdf:resource="&subtracao_CalculadoraAtomicProces;"/>
+</owl:Ontology>
+
+<!-- Service description -->
+<service:Service rdf:ID="somaSubCompService">
+	<service:presents rdf:resource="#somaSubCompProfile"/>
+
+	<service:describedBy rdf:resource="#somaSubCompProcess"/>
+
+	<service:supports rdf:resource="#somaSubCompGrounding"/>
+</service:Service>
+
+<!-- Profile description -->
+<profile:Profile rdf:ID="somaSubCompProfile">
+	<service:isPresentedBy rdf:resource="#somaSubCompService"/>
+
+	<profile:serviceName xml:lang="en">null</profile:serviceName>
+ 
+	<profile:hasInput rdf:resource="#a"/> 
+	<profile:hasInput rdf:resource="#b"/> 
+	<profile:hasOutput rdf:resource="#c"/>
+</profile:Profile>
+
+<!-- Process Model description -->
+<process:CompositeProcess rdf:about="#somaSubCompProcess">
+	<service:describes rdf:resource="#somaSubCompService"/>
+	 
+	<process:hasInput>
+		<process:Input rdf:ID="a">
+			<process:parameterType rdf:datatype="&xsd;#anyURI">
+				http://www.w3.org/2001/XMLSchema#int</process:parameterType>
+			</process:Input>
+	</process:hasInput>
+	 
+	<process:hasInput>
+		<process:Input rdf:ID="b">
+			<process:parameterType rdf:datatype="&xsd;#anyURI">
+				http://www.w3.org/2001/XMLSchema#int</process:parameterType>
+			</process:Input>
+	</process:hasInput>
+	 
+	<process:hasOutput>
+		<process:Output rdf:ID="c">
+			<process:parameterType rdf:datatype="&xsd;#anyURI">
+				http://www.w3.org/2001/XMLSchema#int
+			</process:parameterType>
+		</process:Output>
+	</process:hasOutput>
+	
+	<process:hasResult>
+		<process:Result>
+			<process:withOutput>
+				<process:OutputBinding>
+					<process:valueSource>
+						<process:ValueOf>
+						<process:fromProcess rdf:resource="#subtracao"/>
+						<process:theVar rdf:resource="&subtracao_CalculadoraAtomicProces;#return"/>
+						</process:ValueOf>
+					</process:valueSource>
+					<process:toParam rdf:resource="#c"/>
+				</process:OutputBinding>
+			</process:withOutput>
+		</process:Result>
+	</process:hasResult>
+	
+	<process:composedOf>
+     	<process:Sequence>
+			<process:components>
+				   			<process:ControlConstructList>
+		  						<list:first rdf:resource="#soma" />
+		  			<list:rest>
+				     						<process:ControlConstructList>
+		  												<list:first rdf:resource="#subtracao" />
+		  						<list:rest rdf:resource="&list;#nil"/>
+						</process:ControlConstructList>
+
+		  			</list:rest>
+			</process:ControlConstructList>
+			</process:components>
+		</process:Sequence>
+	</process:composedOf>
+
+</process:CompositeProcess>
+
+<process:Perform rdf:ID="soma">
+	<process:process rdf:resource="&soma_CalculadoraAtomicProces;#soma_CalculadoraAtomicProcess"/>
+	<process:hasDataFrom>
+		<process:InputBinding>
+			<process:valueSource>
+				<process:ValueOf>
+				<process:fromProcess rdf:resource="&process;#TheParentPerform"/>
+				<process:theVar rdf:resource="#a"/>
+				</process:ValueOf>
+			</process:valueSource>
+			<process:toParam rdf:resource="&soma_CalculadoraAtomicProces;#parcela1"/>
+		</process:InputBinding>
+	</process:hasDataFrom>
+	<process:hasDataFrom>
+		<process:InputBinding>
+			<process:valueSource>
+				<process:ValueOf>
+				<process:fromProcess rdf:resource="&process;#TheParentPerform"/>
+				<process:theVar rdf:resource="#b"/>
+				</process:ValueOf>
+			</process:valueSource>
+			<process:toParam rdf:resource="&soma_CalculadoraAtomicProces;#parcela2"/>
+		</process:InputBinding>
+	</process:hasDataFrom>
+</process:Perform>
+
+<process:Perform rdf:ID="subtracao">
+	<process:process rdf:resource="&subtracao_CalculadoraAtomicProces;#subtracao_CalculadoraAtomicProcess"/>
+	<process:hasDataFrom>
+		<process:InputBinding>
+			<process:valueSource>
+				<process:ValueOf>
+				<process:fromProcess rdf:resource="&process;#TheParentPerform"/>
+				<process:theVar rdf:resource="#b"/>
+				</process:ValueOf>
+			</process:valueSource>
+			<process:toParam rdf:resource="&subtracao_CalculadoraAtomicProces;#minuendo"/>
+		</process:InputBinding>
+	</process:hasDataFrom>
+	<process:hasDataFrom>
+		<process:InputBinding>
+			<process:valueSource>
+				<process:ValueOf>
+				<process:fromProcess rdf:resource="#soma"/>
+				<process:theVar rdf:resource="&soma_CalculadoraAtomicProces;#return"/>
+				</process:ValueOf>
+			</process:valueSource>
+			<process:toParam rdf:resource="&subtracao_CalculadoraAtomicProces;#subtraendo"/>
+		</process:InputBinding>
+	</process:hasDataFrom>
+</process:Perform>
+
+<!-- Grounding description -->
+<grounding:WsdlGrounding rdf:ID="somaSubCompGrounding">
+	<service:supportedBy rdf:resource="#somaSubCompService"/>
+	<grounding:hasAtomicProcessGrounding rdf:resource="&soma_CalculadoraAtomicProces;#somaAtomicGrounding"/>
+	<grounding:hasAtomicProcessGrounding rdf:resource="&subtracao_CalculadoraAtomicProces;#subtracaoAtomicGrounding"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>
