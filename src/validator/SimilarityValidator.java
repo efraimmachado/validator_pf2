@@ -14,6 +14,7 @@ import org.mindswap.owls.process.Perform;
 import org.mindswap.owls.service.Service;
 import org.mindswap.owls.process.Process;
 import org.mindswap.owls.process.Sequence;
+import org.mindswap.owls.process.SplitJoin;
 
 
 public class SimilarityValidator {
@@ -26,6 +27,11 @@ public class SimilarityValidator {
 	private SimilarityFilter preconditionFilter;
 	private SimilarityFilter resultFilter;
 	private ArrayList<String> errorLog;
+
+    public ArrayList<String> getErrorLog()
+    {
+        return errorLog;
+    }
 	
 	public SimilarityValidator (URI compURI, SimilarityFilter inFilter, SimilarityFilter outFilter,
 			SimilarityFilter preFilter, SimilarityFilter resFilter)
@@ -46,7 +52,7 @@ public class SimilarityValidator {
             compositionKB = OWLFactory.createKB();
             compositionKB.getReader().setIgnoreFailedImport(true);
  	    //compositionOntology = compositionKB.read(new URI("http://on.cs.unibas.ch/owl-s/1.2/BravoAirService.owl"));
-	    OWLIndividualList<Service> services = compositionKB.readAllServices(new URI("http://on.cs.unibas.ch/owl-s/1.2/BravoAirService.owl"));
+	    OWLIndividualList<Service> services = compositionKB.readAllServices(new URI("http://on.cs.unibas.ch/owl-s/1.2/FindCheaperBook.owl"));
 	    System.out.println("ITERANDO NOS SERVIÇOS");
             if (services.size() == 0)
             {
@@ -102,20 +108,57 @@ public class SimilarityValidator {
         for (int i = 0; i < controlConstructList.size(); i++)
         {
              ControlConstruct cc = controlConstructList.get(i);
-            if (!(cc instanceof Perform))
+            if (cc instanceof Perform)
             {
-                errorLog.add("[ERRO] NAO SEI O ERRO.");
-                return false;
-            }
-            else
-            {
-                Perform perf = (Perform) cc;
-                System.out.println(i +" "+perf.getProcess().getInput());
-                System.out.println(i +" "+perf.getProcess().getOutput());
-                for (int j = 0; j < perf.getAllProcesses(true).size();j++)
+                System.out.println("----PERFORM-----");
+              Perform perf = (Perform) cc;
+                //perf.getBindings().get(0).
+                //System.out.println(i +" "+perf.getProcess().getInput());
+                //System.out.println(i +" "+perf.getProcess().getOutput());
+                //perf.
+                System.out.println("----BINDINGS-----");
+                for (int j = 0; j < perf.getBindings().size();j++)
                 {
-                    //System.out.println(perf.getProcess().)
+                    System.out.println(perf.getBindings().get(j).getProcessVar());
                 }
+                System.out.println("----INPUTS-----");
+                for (int j = 0; j < perf.getProcess().getInputs().size();j++)
+                {
+                    System.out.println(perf.getProcess().getInputs().get(j));
+                }
+                System.out.println("----OUTPUTS-----");
+                for (int j = 0; j < perf.getProcess().getOutputs().size();j++)
+                {
+                    System.out.println(perf.getProcess().getOutputs().get(j));
+                }
+            }
+            else if (cc instanceof SplitJoin)
+            {
+                System.out.println("----SPLITJOIN-----");
+                SplitJoin splitJoin = (SplitJoin) cc;
+                //perf.getBindings().get(0).
+                //System.out.println(i +" "+perf.getProcess().getInput());
+                //System.out.println(i +" "+perf.getProcess().getOutput());
+                //perf.
+                System.out.println("----BINDINGS-----");
+                for (int j = 0; j < splitJoin.getAllBindings().size();j++)
+                {
+                    System.out.println(splitJoin.getAllBindings().get(j));
+                }
+
+                System.out.println("----INPUTS-----");
+                for (int j = 0; j < splitJoin.getAllProcesses(true).size();j++)
+                {
+                    for (int k = 0; k < splitJoin.getAllProcesses(true).get(j).getInputs().size(); k++)
+                        System.out.println(splitJoin.getAllProcesses(true).get(j).getInputs().get(k));
+                }
+                System.out.println("----OUTPUTS-----");
+                for (int j = 0; j < splitJoin.getAllProcesses(true).size();j++)
+                {
+                    for (int k = 0; k < splitJoin.getAllProcesses(true).get(j).getOutputs().size(); k++)
+                        System.out.println(splitJoin.getAllProcesses(true).get(j).getOutputs().get(k));
+                }
+
             }
 
   //           for (int j = 0; j < cc; j++)

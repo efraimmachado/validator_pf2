@@ -39,7 +39,11 @@ public class Main {
         }
         else
         {
-                //exibe erros
+            for (int index = 0; index < simValidator.getErrorLog().size(); index++)
+            {
+                System.out.println(simValidator.getErrorLog().get(index));
+            }
+
         }
 
         System.out.println("FINALIZANDO...");
