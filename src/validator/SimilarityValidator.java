@@ -11,10 +11,18 @@ import org.mindswap.owl.OWLOntology;
 import org.mindswap.owls.process.CompositeProcess;
 import org.mindswap.owls.process.ControlConstruct;
 import org.mindswap.owls.process.Perform;
+import org.mindswap.owls.process.variable.InputBinding;
 import org.mindswap.owls.service.Service;
 import org.mindswap.owls.process.Process;
 import org.mindswap.owls.process.Sequence;
 import org.mindswap.owls.process.SplitJoin;
+import org.mindswap.owls.process.ValueForm;
+import org.mindswap.owls.process.ValueFunction;
+import org.mindswap.owls.process.variable.Parameter;
+import org.mindswap.owls.process.variable.ParameterValueVisitor;
+import org.mindswap.owls.process.variable.ValueConstant;
+import org.mindswap.owls.process.variable.ValueOf;
+import owlsapi_validation.ParamValueVisitor;
 
 
 public class SimilarityValidator {
@@ -107,69 +115,92 @@ public class SimilarityValidator {
 
         for (int i = 0; i < controlConstructList.size(); i++)
         {
+             URI fromOutput, toInput;
+             fromOutput = null;
+             toInput = null;
              ControlConstruct cc = controlConstructList.get(i);
             if (cc instanceof Perform)
             {
                 System.out.println("----PERFORM-----");
               Perform perf = (Perform) cc;
-                //perf.getBindings().get(0).
-                //System.out.println(i +" "+perf.getProcess().getInput());
-                //System.out.println(i +" "+perf.getProcess().getOutput());
-                //perf.
                 System.out.println("----BINDINGS-----");
                 for (int j = 0; j < perf.getBindings().size();j++)
                 {
                     System.out.println(perf.getBindings().get(j).getProcessVar());
+                    toInput = perf.getBindings().get(j).getProcessVar().getURI();
+                    //System.out.println(
+                    ParamValueVisitor visitor = new ParamValueVisitor();
+                    perf.getBindings().get(j).getValue().accept(visitor);
+                    fromOutput = visitor.getFromSource();
                 }
-                System.out.println("----INPUTS-----");
+                //System.out.println("----INPUTS-----");
                 for (int j = 0; j < perf.getProcess().getInputs().size();j++)
                 {
-                    System.out.println(perf.getProcess().getInputs().get(j));
+                   // System.out.println(perf.getProcess().getInputs().get(j));
                 }
-                System.out.println("----OUTPUTS-----");
+                //System.out.println("----OUTPUTS-----");
                 for (int j = 0; j < perf.getProcess().getOutputs().size();j++)
                 {
-                    System.out.println(perf.getProcess().getOutputs().get(j));
+                   // System.out.println(perf.getProcess().getOutputs().get(j));
                 }
             }
             else if (cc instanceof SplitJoin)
             {
                 System.out.println("----SPLITJOIN-----");
                 SplitJoin splitJoin = (SplitJoin) cc;
-                //perf.getBindings().get(0).
-                //System.out.println(i +" "+perf.getProcess().getInput());
-                //System.out.println(i +" "+perf.getProcess().getOutput());
-                //perf.
+                //System.out.println("----BINDINGS-----");
+                for (int j = 0; j < splitJoin.getAllBindings().size();j++)
+                {
+                    //System.out.println("p "+splitJoin.getAllBindings().get(j));
+                }
                 System.out.println("----BINDINGS-----");
                 for (int j = 0; j < splitJoin.getAllBindings().size();j++)
                 {
-                    System.out.println(splitJoin.getAllBindings().get(j));
+                    System.out.println(splitJoin.getAllBindings().get(j).getProcessVar());
+                    toInput = splitJoin.getAllBindings().get(j).getProcessVar().getURI();
+                    //System.out.println(
+                    ParamValueVisitor visitor = new ParamValueVisitor();
+                    splitJoin.getAllBindings().get(j).getValue().accept(visitor);
+                    fromOutput = visitor.getFromSource();
                 }
 
-                System.out.println("----INPUTS-----");
+                //System.out.println("----INPUTS-----");
                 for (int j = 0; j < splitJoin.getAllProcesses(true).size();j++)
                 {
-                    for (int k = 0; k < splitJoin.getAllProcesses(true).get(j).getInputs().size(); k++)
-                        System.out.println(splitJoin.getAllProcesses(true).get(j).getInputs().get(k));
+                    for (int k = 0; k < splitJoin.getAllProcesses(true).get(j).getInputs().size(); k++);
+                      //  System.out.println(splitJoin.getAllProcesses(true).get(j).getInputs().get(k));
                 }
-                System.out.println("----OUTPUTS-----");
+                //System.out.println("----OUTPUTS-----");
                 for (int j = 0; j < splitJoin.getAllProcesses(true).size();j++)
                 {
-                    for (int k = 0; k < splitJoin.getAllProcesses(true).get(j).getOutputs().size(); k++)
-                        System.out.println(splitJoin.getAllProcesses(true).get(j).getOutputs().get(k));
+                    for (int k = 0; k < splitJoin.getAllProcesses(true).get(j).getOutputs().size(); k++);
+                        //System.out.println(splitJoin.getAllProcesses(true).get(j).getOutputs().get(k));
                 }
-
             }
-
-  //           for (int j = 0; j < cc; j++)
-             {
-//                 System.out.println("[bind]"+cc.getAllBindings().get(j));
-             }
-        }
+            System.out.println("IN: "+fromOutput+"\nOUT: "+toInput);
+            
         FunctionalMatcher functMatcher = new FunctionalMatcher();
         if (inputFilter == null && outputFilter == null && preconditionFilter == null
                         && resultFilter == null)
-                return true;
+                return true;      
+      int simIODegree = functMatcher.CalculateDegree(fromOutput, toInput, FunctionalMatcher.INPUT);
+      System.out.println("GRAU "+simIODegree);
+
+                if (inputFilter != null)
+                        if (!inputFilter.isAcceptable(simIODegree))
+                        {
+                                //return false;
+                                errorLog.add("[ERROR][INPUT FILTER] "+fromOutput.toString()+" and "+
+                                                toInput.toString()+" are "+inputFilter.getTestedBy());
+                        }
+                if (outputFilter != null)
+                        if (!outputFilter.isAcceptable(simIODegree))
+                        {
+                                //return false;
+                                errorLog.add("[ERROR][OUTPUT FILTER] "+fromOutput.toString()+" and "+
+                                                toInput.toString()+" are "+outputFilter.getTestedBy());
+                        }
+        }
         /*for (int i = 0; i < 1; i++)
         {
                 URI fromOutput, toInput;
@@ -209,6 +240,6 @@ public class SimilarityValidator {
                                                 toInput.toString()+" are not "+resultFilter.getTestedBy());
                         }
             }*/
-        return true;
+        return (errorLog.isEmpty());
     }
 }
