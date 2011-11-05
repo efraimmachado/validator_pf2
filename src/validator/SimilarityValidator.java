@@ -94,6 +94,18 @@ public class SimilarityValidator {
                         else
                         {
                             Sequence sequence = (Sequence) controlConstruct;
+                            System.out.println("ANTES");
+                            for (int j = 0; j < sequence.getAllBindings().size();j++)
+                            {
+                                
+                                //System.out.println("toInput = "+sequence.getAllBindings().get(j).getProcessVar().getURI());
+                                //System.out.println(
+                                ParamValueVisitor visitor = new ParamValueVisitor();
+                                sequence.getAllBindings().get(j).getValue().accept(visitor);
+                                //System.out.println("fromOutput = "+visitor.getFromSource());
+                                System.out.println("TO "+sequence.getAllBindings().get(j).getProcessVar());
+                            }
+
                             OWLIndividualList<ControlConstruct> controlConstructList = sequence.getConstructs();
                             if (controlConstructList == null)
                             {

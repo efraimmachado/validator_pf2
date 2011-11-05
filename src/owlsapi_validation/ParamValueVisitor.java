@@ -28,19 +28,20 @@ public class ParamValueVisitor implements ParameterValueVisitor {
         Perform sourcePerform = vo.getPerform();
         // get process:theVar
         Parameter sourceParam = vo.getParameter();
-        System.out.println("OMG " + sourceParam);
+        System.out.println("FROM " + sourceParam);
         fromSource = sourceParam.getURI();
     }
 
     public void visit(ValueConstant vc) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        System.out.println("FROM(VALUECONSTANT) " + vc);
+
     }
 
     public void visit(org.mindswap.owls.process.variable.ValueForm vf) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported yet 2.");
     }
 
     public void visit(org.mindswap.owls.process.variable.ValueFunction<?> vf) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported yet 3.");
     }
 }
